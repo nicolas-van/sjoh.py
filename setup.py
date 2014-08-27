@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='sjoh',
-    version='1.0.0',
+    version='1.1.0',
     url='https://github.com/nicolas-van/sjoh.py',
     license='MIT',
     author='Nicolas Vanhoren',
