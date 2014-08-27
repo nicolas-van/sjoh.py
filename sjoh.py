@@ -179,7 +179,7 @@ class JsonCommunicator(object):
 class SjohFlask(object):
     def __init__(self, app):
         self.app = app
-        self.json_communicator = sjoh.JsonCommunicator()
+        self.json_communicator = JsonCommunicator()
 
     def add_url_rule_for_json(self, rule, endpoint=None, view_func=None, *args, **kwargs):
         def nfunc():
