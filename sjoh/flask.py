@@ -21,28 +21,34 @@ AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+from __future__ import unicode_literals, print_function, absolute_import
+
 import sjoh
 import flask
+import logging
+import traceback
+
+_logger = logging.getLogger(__name__)
 
 class SjohFlask(object):
     def __init__(self, app):
         self.app = app
-        self.json_serializer = JsonSerializer()
+        self.json_serializer = sjoh.JsonSerializer()
 
     def add_url_rule_for_json(self, rule, endpoint=None, view_func=None, *args, **kwargs):
         def nfunc():
-            content = flask.request.get_json()
-            arguments = self.json_serializer.from_json_types(content)
-            assert isinstance(arguments, list), "Expected list: %s" % arguments
-            error = False
             try:
+                content = flask.request.get_json()
+                arguments = self.json_serializer.from_json_types(content)
+                assert isinstance(arguments, list), "Expected list: %s" % arguments
+                error = False
                 if view_func:
                     ret = view_func(*arguments)
                 else:
                     ret = None
             except Exception as e:
                 _logger.exception("Exception during request")
-                nex = to_json_exception(e)
+                nex = sjoh.to_json_exception(e)
                 if self.app.config.get("SJOH_DEBUG", True):
                     nex.traceback = traceback.format_exc()
                 error = True
