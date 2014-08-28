@@ -10,7 +10,7 @@ setup(
     author_email='nicolas.vanhoren@gmail.com',
     description='Implementation of the Simple JSON over HTTP protocol.',
     long_description=__doc__,
-    py_modules=[
+    packages=[
         'sjoh'
     ],
     platforms='any',
