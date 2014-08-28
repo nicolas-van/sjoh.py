@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='sjoh',
-    version='1.1.1',
+    version='2.0.0',
     url='https://github.com/nicolas-van/sjoh.py',
     license='MIT',
     author='Nicolas Vanhoren',
@@ -14,12 +14,6 @@ setup(
         'sjoh'
     ],
     platforms='any',
-    install_requires=[
-        'flask',
-    ],
-    tests_require=[
-        'flask',
-    ],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',

@@ -26,7 +26,6 @@ from __future__ import unicode_literals, print_function, absolute_import
 import json
 import time
 import datetime
-import flask
 import traceback
 import logging
 
@@ -174,46 +173,3 @@ class JsonSerializer(object):
 
 class JsonSerializerException(Exception):
     pass
-
-class JsonCommunicator(object):
-    def __init__(self):
-        self.json_serializer = JsonSerializer()
-        self.debug = True
-
-    def receive(self, flask_request, callback):
-        content = flask_request.get_json()
-        arguments = self.json_serializer.from_json_types(content)
-        assert isinstance(arguments, list), "Expected list: %s" % arguments
-        error = False
-        try:
-            ret = callback(*arguments)
-        except Exception as e:
-            _logger.exception("Exception during request")
-            nex = to_json_exception(e)
-            if self.debug:
-                nex.traceback = traceback.format_exc()
-            error = True
-            ret = nex
-        resp = flask.make_response(self.json_serializer.stringify(ret), 500 if error else 200)
-        resp.mimetype = "application/json"
-        return resp
-
-class SjohFlask(object):
-    def __init__(self, app):
-        self.app = app
-        self.json_communicator = JsonCommunicator()
-
-    def add_url_rule_for_json(self, rule, endpoint=None, view_func=None, *args, **kwargs):
-        def nfunc():
-            return self.json_communicator.receive(flask.request, view_func)
-        if view_func:
-            nfunc.__name__ = view_func.__name__
-            nfunc.__module__ = view_func.__module__
-        return self.app.add_url_rule(rule, endpoint, nfunc, *args, methods=["POST"], **kwargs)
-
-    def json(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            self.add_url_rule_for_json(rule, endpoint, f, **options)
-            return f
-        return decorator
