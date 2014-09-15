@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='sjoh',
-    version='2.0.0',
+    version='2.1.0',
     url='https://github.com/nicolas-van/sjoh.py',
     license='MIT',
     author='Nicolas Vanhoren',
@@ -12,6 +12,9 @@ setup(
     long_description=__doc__,
     packages=[
         'sjoh'
+    ],
+    install_requires=[
+        'request',
     ],
     platforms='any',
     classifiers=[

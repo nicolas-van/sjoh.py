@@ -28,6 +28,7 @@ import time
 import datetime
 import traceback
 import logging
+import requests
 
 _logger = logging.getLogger(__name__)
 
@@ -173,3 +174,23 @@ class JsonSerializer(object):
 
 class JsonSerializerException(Exception):
     pass
+
+class JsonCommunicator(object):
+    def __init__(self):
+        self.json_serializer = JsonSerializer()
+
+    def send(self, url, *args):
+        encoded = self.json_serializer.stringify(args)
+
+        r = requests.post(url, data=encoded, headers={'content-type': 'application/json'})
+
+        if r.status_code == 200:
+            return self.json_serializer.parse(r.text)
+        elif r.status_code == 500:
+            _logger.debug("Error 500 during sjoh request at URL %s", url)
+            try:
+                raise self.json_serializer.parse(r.text)
+            except ValueError:
+                r.raise_for_status()
+        else:
+            r.raise_for_status()
