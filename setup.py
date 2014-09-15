@@ -14,7 +14,7 @@ setup(
         'sjoh'
     ],
     install_requires=[
-        'request',
+        'request>=2.2.1',
     ],
     platforms='any',
     classifiers=[
